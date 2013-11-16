@@ -35,26 +35,28 @@ double lat=51.0;
 double lon=17.0;
 
 int brightness=20;
+int prev_brightness=0;
 int elevation=0;
 
-int i=0;
 int r=0;
 
 FILE *file;
 
-r=systemtime_get_time(&date);
-elevation=solar_elevation(date, lat, lon);
-brightness=(int)calculate_interpolated_value(elevation, brightness_day, brightness_night);
-
 while(1){
-	file=fopen("/sys/class/backlight/acpi_video0/brightness", "w");
-	if (file == NULL)
-	{
-		printf("Error opening file!\n");
-		exit(1);
+	r=systemtime_get_time(&date);
+	elevation=solar_elevation(date, lat, lon);
+	brightness=(int)calculate_interpolated_value(elevation, brightness_day, brightness_night);
+	if(brightness != prev_brightness){
+		file=fopen("/sys/class/backlight/acpi_video0/brightness", "w");
+		if (file == NULL)
+		{
+			printf("Error opening file!\n");
+			exit(1);
+		}
+		fprintf(file, "%d", brightness);
+		fclose(file);
 	}
-	fprintf(file, "%d", brightness);
-	fclose(file);
+	prev_brightness=brightness;
 	sleep(60);
 }
 return 0;
