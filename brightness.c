@@ -17,6 +17,7 @@ along with Brightness. If not, see <http://www.gnu.org/licenses/>.
 Copyright (c) 2013 Jakub Tymejczyk <tymmej@gmail.com>
 */
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
