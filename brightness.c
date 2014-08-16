@@ -47,36 +47,27 @@ float calculate_interpolated_value(double elevation, float day, float night)
 
 int main(){
 
-int brightness_day=20;
+int brightness_day=100;
 int brightness_night=5;
 
 double date=0;
 double lat=51.0;
 double lon=17.0;
 
-int brightness=20;
+int brightness=0;
 int prev_brightness=0;
 int elevation=0;
 
-int r=0;
-
-FILE *file;
+char command[255];
 
 while(1){
-	r=systemtime_get_time(&date);
 	elevation=solar_elevation(date, lat, lon);
 	brightness=(int)calculate_interpolated_value(elevation, brightness_day, brightness_night);
 	if(brightness != prev_brightness){
-		file=fopen("/sys/class/backlight/acpi_video0/brightness", "w");
-		if (file == NULL)
-		{
-			printf("Error opening file!\n");
-			exit(1);
-		}
-		fprintf(file, "%d", brightness);
-		fclose(file);
+        sprintf(command, "light -S %d", brightness);
+		system(command);
+		prev_brightness=brightness;
 	}
-	prev_brightness=brightness;
 	sleep(60);
 }
 return 0;
